@@ -167,6 +167,45 @@ void Button::paintEvent(QPaintEvent *event)
 
 /***
  *
+ * PWMs 
+ *
+ ***/
+
+class PWM: public QWidget {
+  Q_OBJECT
+public:
+  PWM(QColor color, QWidget *parent = 0);
+public slots:
+  void setState(bool newState);
+protected:
+  void paintEvent(QPaintEvent *event);
+  QColor color;
+  bool state;
+};
+
+PWM::PWM(QColor color, QWidget *parent) : QWidget(parent){
+  this->color = color;
+  this->state = true;
+}
+
+void PWM::setState(bool newState)
+{
+  state = newState;
+  update();
+}
+
+void PWM::paintEvent(QPaintEvent *event)
+{
+  QPainter painter(this);
+  if (state) {
+    painter.setPen(color);
+    painter.setBrush(color);
+    painter.drawEllipse(rect());
+  }
+}
+
+/***
+ *
  * LCD
  *
  ***/
@@ -270,20 +309,19 @@ int main(int argc, char *argv[])
 
 #define DIST 50
   for (int i = 0; i < 5; i++) {
-    Led *in = new Led(Qt::green, &frame);
+    PWM *in = new PWM(Qt::green, &frame);
     in->setGeometry(83, 290+i*DIST, 10, 10);
   }
 #undef DIST
 
 #define DIST 50
   for (int i = 0; i < 8; i++) {
-    Led *out = new Led(Qt::blue, &frame);
+    PWM *out = new PWM(Qt::blue, &frame);
     out->setGeometry(688, 281+i*DIST, 10, 10);
   }
 #undef DIST
   
   frame.show();
-  
   
   return a.exec();
 }

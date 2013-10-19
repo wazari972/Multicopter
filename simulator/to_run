@@ -1,1 +1,1 @@
-rm -f emulino-gui.o emulino-gui ; make -f Makefile.kevin emulino-gui ; ./emulino-gui
+rm -f emulino-gui.o emulino-gui ; make -f Makefile.good emulino-gui ; ./emulino-gui
