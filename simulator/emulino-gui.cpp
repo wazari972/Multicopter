@@ -38,6 +38,7 @@ public slots:
   void onIdle();
   void onButtonPress();
   void onButtonRelease();
+  
 private:
   QTimer timer;
 };
@@ -66,7 +67,7 @@ void EmulinoApp::onButtonRelease()
 class BoardWidget: public QWidget {
   Q_OBJECT
 public:
-  BoardWidget(QWidget *parent = 0);
+  BoardWidget(QWidget *parent);
 protected:
   void paintEvent(QPaintEvent *event);
 private:
@@ -95,9 +96,7 @@ void BoardWidget::paintEvent(QPaintEvent *event)
 class Led: public QWidget {
   Q_OBJECT
 public:
-  Led(QColor color, QWidget *parent = 0);
-public slots:
-  void setState(bool newState);
+  Led(QColor color, QWidget *parent);
 protected:
   void paintEvent(QPaintEvent *event);
   QColor color;
@@ -108,12 +107,6 @@ Led::Led(QColor color, QWidget *parent) : QWidget(parent)
 {
   this->color = color;
   state = true;
-}
-
-void Led::setState(bool newState)
-{
-  state = newState;
-  update();
 }
 
 void Led::paintEvent(QPaintEvent *event)
@@ -135,23 +128,32 @@ void Led::paintEvent(QPaintEvent *event)
 class Button: public QWidget {
   Q_OBJECT
 public:
-  Button(QColor color, QWidget *parent = 0);
+  Button(QWidget *parent, int id);
 public slots:
-  void setState(bool newState);
+  void mousePressEvent(QMouseEvent *event);
+  void mouseReleaseEvent(QMouseEvent *event);
 protected:
   void paintEvent(QPaintEvent *event);
   QColor color;
   bool state;
+  int id;
 };
 
-Button::Button(QColor color, QWidget *parent) : QWidget(parent){
-  this->color = color;
+Button::Button(QWidget *parent, int id) : QWidget(parent){
+  this->color = Qt::red;
   this->state = true;
+  this->id = id;
+    
+}
+void Button::mousePressEvent(QMouseEvent *event)
+{
+  this->color = Qt::blue;
+  update();
 }
 
-void Button::setState(bool newState)
+void Button:: mouseReleaseEvent(QMouseEvent *event)
 {
-  state = newState;
+  this->color = Qt::red;
   update();
 }
 
@@ -174,24 +176,18 @@ void Button::paintEvent(QPaintEvent *event)
 class PWM: public QWidget {
   Q_OBJECT
 public:
-  PWM(QColor color, QWidget *parent = 0);
-public slots:
-  void setState(bool newState);
+  PWM(QColor color, QWidget *parent, int id);
 protected:
   void paintEvent(QPaintEvent *event);
   QColor color;
   bool state;
+  int id;
 };
 
-PWM::PWM(QColor color, QWidget *parent) : QWidget(parent){
+PWM::PWM(QColor color, QWidget *parent, int id) : QWidget(parent){
   this->color = color;
   this->state = true;
-}
-
-void PWM::setState(bool newState)
-{
-  state = newState;
-  update();
+  this->id = id;
 }
 
 void PWM::paintEvent(QPaintEvent *event)
@@ -210,7 +206,6 @@ void PWM::paintEvent(QPaintEvent *event)
  *
  ***/
 
-
 #define LCD_X 128
 #define LCD_Y  64
 #define LCD_PIXEL 4
@@ -222,7 +217,7 @@ void PWM::paintEvent(QPaintEvent *event)
 class Lcd: public QWidget {
   Q_OBJECT
 public:
-  Lcd(QWidget *parent = 0);
+  Lcd(QWidget *parent);
   void writeText(char *chr, int x, int y);
   void setPixel(bool val, int x, int y);
 protected:
@@ -302,21 +297,21 @@ int main(int argc, char *argv[])
   
 #define DIST 138
   for (int i = 0; i < 4; i++) {
-    Button *bt = new Button(Qt::red, &frame);
+    Button *bt = new Button(&frame, i);
     bt->setGeometry(170+i*DIST, 685, 30, 30);
   }
 #undef DIST
 
 #define DIST 50
   for (int i = 0; i < 5; i++) {
-    PWM *in = new PWM(Qt::green, &frame);
+    PWM *in = new PWM(Qt::green, &frame, i);
     in->setGeometry(83, 290+i*DIST, 10, 10);
   }
 #undef DIST
 
 #define DIST 50
   for (int i = 0; i < 8; i++) {
-    PWM *out = new PWM(Qt::blue, &frame);
+    PWM *out = new PWM(Qt::blue, &frame, i);
     out->setGeometry(688, 281+i*DIST, 10, 10);
   }
 #undef DIST

@@ -2,10 +2,10 @@
 
 #include <unistd.h>
 
-void pinMode(uint8_t, uint8_t){}
-void digitalWrite(uint8_t, uint8_t){}
-int digitalRead(uint8_t){return 0;}
-int analogRead(uint8_t){}
+void pinMode(uint8_t p, uint8_t m){}
+void digitalWrite(uint8_t v, uint8_t w){}
+int digitalRead(uint8_t w){return 0;}
+int analogRead(uint8_t w){}
 void analogReference(uint8_t mode){}
 
 void delay(unsigned long d){

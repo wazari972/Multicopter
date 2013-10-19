@@ -161,33 +161,26 @@ static const uint qt_meta_data_Led[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       0,    0, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        0,       // signalCount
 
- // slots: signature, parameters, type, tag, flags
-      14,    5,    4,    4, 0x0a,
-
        0        // eod
 };
 
 static const char qt_meta_stringdata_Led[] = {
-    "Led\0\0newState\0setState(bool)\0"
+    "Led\0"
 };
 
 void Led::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        Q_ASSERT(staticMetaObject.cast(_o));
-        Led *_t = static_cast<Led *>(_o);
-        switch (_id) {
-        case 0: _t->setState((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        default: ;
-        }
-    }
+    Q_UNUSED(_o);
+    Q_UNUSED(_id);
+    Q_UNUSED(_c);
+    Q_UNUSED(_a);
 }
 
 const QMetaObjectExtraData Led::staticMetaObjectExtraData = {
@@ -221,11 +214,6 @@ int Led::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
-            qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
-    }
     return _id;
 }
 static const uint qt_meta_data_Button[] = {
@@ -234,7 +222,7 @@ static const uint qt_meta_data_Button[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       2,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -242,13 +230,15 @@ static const uint qt_meta_data_Button[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      17,    8,    7,    7, 0x0a,
+      14,    8,    7,    7, 0x0a,
+      44,    8,    7,    7, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_Button[] = {
-    "Button\0\0newState\0setState(bool)\0"
+    "Button\0\0event\0mousePressEvent(QMouseEvent*)\0"
+    "mouseReleaseEvent(QMouseEvent*)\0"
 };
 
 void Button::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -257,7 +247,8 @@ void Button::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         Q_ASSERT(staticMetaObject.cast(_o));
         Button *_t = static_cast<Button *>(_o);
         switch (_id) {
-        case 0: _t->setState((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 0: _t->mousePressEvent((*reinterpret_cast< QMouseEvent*(*)>(_a[1]))); break;
+        case 1: _t->mouseReleaseEvent((*reinterpret_cast< QMouseEvent*(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -295,9 +286,9 @@ int Button::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 2)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 2;
     }
     return _id;
 }
@@ -307,33 +298,26 @@ static const uint qt_meta_data_PWM[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       0,    0, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        0,       // signalCount
 
- // slots: signature, parameters, type, tag, flags
-      14,    5,    4,    4, 0x0a,
-
        0        // eod
 };
 
 static const char qt_meta_stringdata_PWM[] = {
-    "PWM\0\0newState\0setState(bool)\0"
+    "PWM\0"
 };
 
 void PWM::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        Q_ASSERT(staticMetaObject.cast(_o));
-        PWM *_t = static_cast<PWM *>(_o);
-        switch (_id) {
-        case 0: _t->setState((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        default: ;
-        }
-    }
+    Q_UNUSED(_o);
+    Q_UNUSED(_id);
+    Q_UNUSED(_c);
+    Q_UNUSED(_a);
 }
 
 const QMetaObjectExtraData PWM::staticMetaObjectExtraData = {
@@ -367,11 +351,6 @@ int PWM::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
-            qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
-    }
     return _id;
 }
 static const uint qt_meta_data_Lcd[] = {
