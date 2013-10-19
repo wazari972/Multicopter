@@ -85,11 +85,11 @@ void BoardWidget::paintEvent(QPaintEvent *event)
   painter.drawImage(board.rect(), board, board.rect());
 }
 
-class Component {
-public:
-    virtual ~Component() {}
-    virtual void setPin(int pin, bool state) = 0;
-};
+/***
+ *
+ * Led 
+ *
+ ***/
 
 
 class Led: public QWidget {
@@ -126,6 +126,12 @@ void Led::paintEvent(QPaintEvent *event)
   }
 }
 
+/***
+ *
+ * Buttons 
+ *
+ ***/
+
 class Button: public QWidget {
   Q_OBJECT
 public:
@@ -140,7 +146,13 @@ protected:
 
 Button::Button(QColor color, QWidget *parent) : QWidget(parent){
   this->color = color;
-  state = true;
+  this->state = true;
+}
+
+void Button::setState(bool newState)
+{
+  state = newState;
+  update();
 }
 
 void Button::paintEvent(QPaintEvent *event)
@@ -153,6 +165,13 @@ void Button::paintEvent(QPaintEvent *event)
   }
 }
 
+/***
+ *
+ * LCD
+ *
+ ***/
+
+
 #define LCD_X 128
 #define LCD_Y  64
 #define LCD_PIXEL 4
@@ -161,15 +180,12 @@ void Button::paintEvent(QPaintEvent *event)
 #define CHAR_HEIGHT 8
 #define CHAR_INTER_LINE 0
 
-class Lcd: public QWidget, public Component {
+class Lcd: public QWidget {
   Q_OBJECT
 public:
   Lcd(QWidget *parent = 0);
-  enum Pin {pinRS, pinRW, pinE, pinD4, pinD5, pinD6, pinD7};
   void writeText(char *chr, int x, int y);
   void setPixel(bool val, int x, int y);
-public slots:
-  void setPin(int pin, bool state);
 protected:
   void paintEvent(QPaintEvent *event);
 private:
@@ -183,8 +199,6 @@ Lcd::Lcd(QWidget *parent) : QWidget(parent), cursor(0)
 {
   memset(display, 0, sizeof(display));
 }
-
-void Lcd::setPin(int _pin, bool state) {}
 
 void Lcd::paintEvent(QPaintEvent *event)
 {
@@ -228,33 +242,11 @@ void Lcd::writeText(char *chr, int x, int y) {
   }
 }
 
-class Pin: public QObject {
-  Q_OBJECT
-public:
-  Pin();
-  void setState(bool newState);
-signals:
-  void stateChanged(bool state);
-private:
-  bool state;
-};
-
-Pin::Pin() : state(false)
-{
-}
-
-void Pin::setState(bool newState)
-{
-  if (newState != state) {
-    state = newState;
-    stateChanged(state);
-  }
-}
-
-void pin_change(int pin, bool state)
-{
-  fprintf(stderr, "pin %d %d\n", pin, state);
-}
+/***
+ *
+ * Main
+ *
+ ***/
 
 int main(int argc, char *argv[])
 {
