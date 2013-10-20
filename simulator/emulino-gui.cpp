@@ -279,25 +279,6 @@ bool KK2::btReleased(int id) {
   return false;
 }
 
-/***
- *
- * Main
- *
- ***/
-/*
-class Backend : public QThread
- {
-     Q_OBJECT
-
- protected:
-     void run();
- };
-
- void MyThread::run()
- {
-     
- }
-*/
 int main(int argc, char *argv[])
 {
   EmulinoApp a(argc, argv);

@@ -34,7 +34,7 @@ main : $(OBJECTS) main.o
 	$(CXX)  $(OBJECTS) main.o -o $(@)
 
 
-emulino-gui.o : emulino-gui.cpp 
+emulino-gui.o : emulino-gui.cpp emulino-gui.moc
 	$(CXX) -c $(QTFLAGS) $(QTINC) $(<) -o $(@) 
 
 emulino-gui : emulino-gui.o  $(OBJECTS)
