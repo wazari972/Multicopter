@@ -85,7 +85,7 @@ class Lcd: public QWidget {
   Q_OBJECT
 public:
   Lcd(QWidget *parent);
-  void writeText(char *chr, int x, int y);
+  void writeText(const char *chr, int x, int y);
   void setPixel(bool val, int x, int y);
 protected:
   void paintEvent(QPaintEvent *event);
@@ -112,14 +112,14 @@ public:
   void setOutPWM(int id, long pwm);
   bool btPressed(int id);
   bool btReleased(int id);
-protected:
+  void update(void);
+  
   Lcd *lcd;
+protected:
   Led *led;
   Button *buttons[BT_CNT];
   PWM *in_pwns[PWM_IN_CNT];
   PWM *out_pwns[PWM_OUT_CNT];
 };
-
-//KK2 *kk2 = NULL;
 
 #endif

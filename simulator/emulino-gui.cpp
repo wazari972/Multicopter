@@ -19,6 +19,7 @@
  */
 
 #include "emulino-gui.h"
+#include "ardu.hpp"
 
 #include <stdio.h>
 
@@ -202,7 +203,7 @@ void Lcd::setPixel(bool val, int x, int y) {
   display[x][y] = val;
 }
 
-void Lcd::writeText(char *chr, int x, int y) {
+void Lcd::writeText(const char *chr, int x, int y) {
   int init_x = x;
   while(*chr) {
     if (*chr == '\n') {
@@ -261,6 +262,7 @@ KK2::KK2(QFrame *frame) {
 
 void KK2::ledState(bool st) {
   led->setState(st);
+  led->update();
 }
 
 long KK2::getInPWM(int id) {
@@ -279,6 +281,57 @@ bool KK2::btReleased(int id) {
   return false;
 }
 
+void KK2::update(void) {
+  this->led->update();
+
+  for (int i = 0; i < PWM_OUT_CNT; i++) {
+    out_pwns[i]->update();
+  }
+
+  for (int i = 0; i < PWM_IN_CNT; i++) {
+    in_pwns[i]->update();
+  }
+
+  this->lcd->update();
+}
+
+
+/***
+ *
+ * Simulator thread
+ *
+ ***/
+
+#include <QThread>
+
+KKComm::KKComm(KK2 *kk2) {
+  this->kk2 = kk2;
+}
+
+void KKComm::setArduino(Arduino *ardu) {
+  this->ardu = ardu;
+}
+
+void KKComm::sayHello(const char *str) {
+  this->kk2->lcd->writeText(str, 50, 50);
+  this->kk2->lcd->update();
+}
+
+void KKComm::run()
+{
+  this->ardu->ssetup();
+  while(1) {
+    this->ardu->lloop();
+  }
+}
+
+/***
+ *
+ * Main
+ *
+ ***/
+
+
 int main(int argc, char *argv[])
 {
   EmulinoApp a(argc, argv);
@@ -286,8 +339,14 @@ int main(int argc, char *argv[])
   BoardWidget board(&frame);
 
   KK2 *kk2 = new KK2(&frame);
-  
+  KKComm *com = new KKComm(kk2);
+
+  Arduino *arduino = new Arduino(com);
+  com->setArduino(arduino);
+
   frame.show();
+  
+  com->start();
   
   return a.exec();
 }

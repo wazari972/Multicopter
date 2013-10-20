@@ -6,7 +6,6 @@ extern "C"{
 #endif
   
 typedef char byte;
-//typedef char uint8_t;
 #define PROGMEM
 
 #define HIGH 1
@@ -14,6 +13,7 @@ typedef char byte;
 #define EXTERNAL 1
 
 #include "/usr/share/arduino/hardware/arduino/cores/arduino/WString.h"
+
 void pinMode(uint8_t p, uint8_t m);
 void digitalWrite(uint8_t v, uint8_t w);
 int digitalRead(uint8_t w);

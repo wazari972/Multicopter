@@ -3,11 +3,13 @@ DFLAGS = -g -O0
 CXXFLAGS = $(DFLAGS) $(ARDU_INC) -fpermissive
 CXX = g++
 
-OBJECTS = KK2LCD.o project.o conv.o ardu.o WString.o
+OBJECTS = KK2LCD.o project.o conv.o ardu.o WString.o ardupp.o
 
 QTFLAGS = -pipe -march=x86-64 -mtune=generic  -pipe -fstack-protector --param=ssp-buffer-size=4  -W -D_REENTRANT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED $(DFLAGS)
 QTINC = -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 
 QTLIBS = -lQtGui -lQtCore -lpthread 
+
+all: emulino-gui
 
 KK2LCD.o : ./LCD/KK2LCD.c
 	$(CXX) -c $(CXXFLAGS) -I../simulator/LCD $(<) -o $(@)
@@ -24,7 +26,10 @@ conv.o : conv.c
 	$(CXX) -c $(CXXFLAGS) $(<) -o $(@)
 
 ardu.o : ardu.c
-	$(CXX) -c $(CXXFLAGS)  $(<) -o $(@)
+	$(CXX) -c $(CXXFLAGS)  $(<) -o $(@) $(QTFLAGS) $(QTINC)
+
+ardupp.o : ardu.cpp
+	$(CXX) -c $(CXXFLAGS)  $(<) -o $(@) $(QTFLAGS) $(QTINC)
 
 #############
 
@@ -39,10 +44,15 @@ main : $(OBJECTS) main.o
 DEFINES       = -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED
 INCPATH       = -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4  -I.
 moc_emulino-gui.cpp: emulino-gui.h
-	/usr/lib/qt4/bin/moc $(DEFINES) $(INCPATH) emulino-gui.h -o moc_emulino-gui.cpp
+	/usr/lib/qt4/bin/moc $(DEFINES) $(INCPATH) emulino-gui.h -o moc_emulino-gui.cpp 
+
+moc_ardu.cpp: ardu.h
+	/usr/lib/qt4/bin/moc $(DEFINES) $(INCPATH) ardu.hpp -o moc_ardu.cpp 
 
 emulino-gui.moc : emulino-gui.cpp
-	/usr/lib/qt4/bin/moc $(DEFINES) $(INCPATH) emulino-gui.cpp -o emulino-gui.moc
+	/usr/lib/qt4/bin/moc $(DEFINES) $(INCPATH) emulino-gui.cpp -o emulino-gui.moc 
+
+
 
 emulino-gui.o : emulino-gui.cpp moc_emulino-gui.cpp emulino-gui.moc
 	$(CXX) -c $(QTFLAGS) $(QTINC) $(<) -o $(@) 
@@ -50,8 +60,11 @@ emulino-gui.o : emulino-gui.cpp moc_emulino-gui.cpp emulino-gui.moc
 moc_emulino-gui.o: moc_emulino-gui.cpp
 	$(CXX) -c $(QTFLAGS) $(INCPATH) -o moc_emulino-gui.o moc_emulino-gui.cpp
 
-emulino-gui : emulino-gui.o moc_emulino-gui.o $(OBJECTS)
-	$(CXX) -o emulino-gui $(QTLIBS) $(OBJECTS) emulino-gui.o  moc_emulino-gui.o 
+moc_ardu.o: moc_ardu.cpp
+	$(CXX) -c $(QTFLAGS) $(INCPATH) -o moc_ardu.o moc_ardu.cpp
+
+emulino-gui : emulino-gui.o moc_emulino-gui.o $(OBJECTS) moc_ardu.o
+	$(CXX) -o emulino-gui $(QTLIBS) $(OBJECTS) emulino-gui.o  moc_emulino-gui.o  moc_ardu.o
 
 project : $(OBJECTS)
 	$(CXX) -o $(@) $(OBJECTS)
