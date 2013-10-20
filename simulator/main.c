@@ -5,7 +5,7 @@ extern "C"{
 void setup(void);
 void loop(void);
 
-int main(int argc, char *argv[]) {
+int stqrt(int argc, char *argv[]) {
   setup();
   loop();
   return 0;

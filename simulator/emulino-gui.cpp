@@ -285,7 +285,7 @@ int main(int argc, char *argv[])
   QFrame frame;
   BoardWidget board(&frame);
 
-  kk2 = new KK2(&frame);
+  KK2 *kk2 = new KK2(&frame);
   
   frame.show();
   

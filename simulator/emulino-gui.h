@@ -120,6 +120,6 @@ protected:
   PWM *out_pwns[PWM_OUT_CNT];
 };
 
-KK2 *kk2 = NULL;
+//KK2 *kk2 = NULL;
 
 #endif
