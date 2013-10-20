@@ -1,3 +1,5 @@
 *.o
 emulino-gui
 emulino
+main
+.#*

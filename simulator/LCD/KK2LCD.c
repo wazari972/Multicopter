@@ -1,6 +1,10 @@
 #include <stdint.h>
-#include <avr/io.h>  
+//#include <avr/io.h>  
 #include <stdio.h>
+
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 #include "include/fonts.h"
 
@@ -17,4 +21,6 @@ void st7565Refresh( void ){}
 void st7565ClearBuffer( void ){}
 void st7565DrawChar(uint16_t x, uint16_t y, uint8_t c ){}
 
-
+#ifdef __cplusplus
+}
+#endif

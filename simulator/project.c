@@ -1,1 +1,1 @@
-../kk2ino/check.ino
+/home/kevin/.arduino/sketchbook/kk2ino/check.ino

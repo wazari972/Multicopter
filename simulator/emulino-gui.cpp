@@ -18,17 +18,9 @@
  * along with Emulino.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <qapplication.h>
-#include <qframe.h>
-#include <qhash.h>
-#include <qlayout.h>
-#include <qmessagebox.h>
-#include <qpainter.h>
-#include <qpushbutton.h>
-#include <qtimer.h>
-#include <stdio.h>
+#include "emulino-gui.h"
 
-#include "ardu.h"
+#include <stdio.h>
 
 class EmulinoApp: public QApplication {
   Q_OBJECT
@@ -92,17 +84,6 @@ void BoardWidget::paintEvent(QPaintEvent *event)
  *
  ***/
 
-
-class Led: public QWidget {
-  Q_OBJECT
-public:
-  Led(QColor color, QWidget *parent);
-protected:
-  void paintEvent(QPaintEvent *event);
-  QColor color;
-  bool state;
-};
-
 Led::Led(QColor color, QWidget *parent) : QWidget(parent)
 {
   this->color = color;
@@ -119,25 +100,15 @@ void Led::paintEvent(QPaintEvent *event)
   }
 }
 
+void Led::setState(bool st) {
+  this->state = st;
+}
+
 /***
  *
  * Buttons 
  *
  ***/
-
-class Button: public QWidget {
-  Q_OBJECT
-public:
-  Button(QWidget *parent, int id);
-public slots:
-  void mousePressEvent(QMouseEvent *event);
-  void mouseReleaseEvent(QMouseEvent *event);
-protected:
-  void paintEvent(QPaintEvent *event);
-  QColor color;
-  bool state;
-  int id;
-};
 
 Button::Button(QWidget *parent, int id) : QWidget(parent){
   this->color = Qt::red;
@@ -173,17 +144,6 @@ void Button::paintEvent(QPaintEvent *event)
  *
  ***/
 
-class PWM: public QWidget {
-  Q_OBJECT
-public:
-  PWM(QColor color, QWidget *parent, int id);
-protected:
-  void paintEvent(QPaintEvent *event);
-  QColor color;
-  bool state;
-  int id;
-};
-
 PWM::PWM(QColor color, QWidget *parent, int id) : QWidget(parent){
   this->color = color;
   this->state = true;
@@ -200,32 +160,19 @@ void PWM::paintEvent(QPaintEvent *event)
   }
 }
 
+void PWM::setPWM(long pwm) {
+  
+}
+
+long PWM::getPWM(void) {
+  return -1;
+}
+
 /***
  *
  * LCD
  *
  ***/
-
-#define LCD_X 128
-#define LCD_Y  64
-#define LCD_PIXEL 4
-
-#define CHAR_WIDTH 5
-#define CHAR_HEIGHT 8
-#define CHAR_INTER_LINE 0
-
-class Lcd: public QWidget {
-  Q_OBJECT
-public:
-  Lcd(QWidget *parent);
-  void writeText(char *chr, int x, int y);
-  void setPixel(bool val, int x, int y);
-protected:
-  void paintEvent(QPaintEvent *event);
-private:
-  bool display[LCD_X][LCD_Y];
-  int cursor;
-};
 
 #include "lcd.inc"
 
@@ -278,43 +225,86 @@ void Lcd::writeText(char *chr, int x, int y) {
 
 /***
  *
- * Main
+ * KK2
  *
  ***/
 
+KK2::KK2(QFrame *frame) {
+  lcd = new Lcd(frame);
+  lcd->setGeometry(130, 280, LCD_X*LCD_PIXEL, LCD_Y*LCD_PIXEL);
+  lcd->writeText("hello\nworld", 10, 10);
+  
+  led = new Led(Qt::yellow, frame);
+  led->setGeometry(165, 163, 20, 10);
+  
+#define DIST 138
+  for (int i = 0; i <  BT_CNT; i++) {
+    buttons[i] = new Button(frame, i);
+    buttons[i]->setGeometry(170+i*DIST, 685, 30, 30);
+  }
+#undef DIST
+
+#define DIST 50
+  for (int i = 0; i < PWM_IN_CNT; i++) {
+    in_pwns[i] = new PWM(Qt::green, frame, i);
+    in_pwns[i]->setGeometry(83, 290+i*DIST, 10, 10);
+  }
+#undef DIST
+
+#define DIST 50
+  for (int i = 0; i < PWM_OUT_CNT; i++) {
+    out_pwns[i] = new PWM(Qt::blue, frame, i);
+    out_pwns[i]->setGeometry(688, 281+i*DIST, 10, 10);
+  }
+#undef DIST
+}
+
+void KK2::ledState(bool st) {
+  led->setState(st);
+}
+
+long KK2::getInPWM(int id) {
+  return in_pwns[id]->getPWM();
+}
+
+void KK2::setOutPWM(int id, long pwm) {
+  out_pwns[id]->setPWM(pwm);
+}
+
+bool KK2::btPressed(int id) {
+  return false;
+}
+
+bool KK2::btReleased(int id) {
+  return false;
+}
+
+/***
+ *
+ * Main
+ *
+ ***/
+/*
+class Backend : public QThread
+ {
+     Q_OBJECT
+
+ protected:
+     void run();
+ };
+
+ void MyThread::run()
+ {
+     
+ }
+*/
 int main(int argc, char *argv[])
 {
   EmulinoApp a(argc, argv);
   QFrame frame;
   BoardWidget board(&frame);
-  
-  Lcd lcd(&frame);
-  lcd.setGeometry(130, 280, LCD_X*LCD_PIXEL, LCD_Y*LCD_PIXEL);
-  lcd.writeText("hello\nworld", 10, 10);
 
-  Led led(Qt::yellow, &frame);
-  led.setGeometry(165, 163, 20, 10);
-  
-#define DIST 138
-  for (int i = 0; i < 4; i++) {
-    Button *bt = new Button(&frame, i);
-    bt->setGeometry(170+i*DIST, 685, 30, 30);
-  }
-#undef DIST
-
-#define DIST 50
-  for (int i = 0; i < 5; i++) {
-    PWM *in = new PWM(Qt::green, &frame, i);
-    in->setGeometry(83, 290+i*DIST, 10, 10);
-  }
-#undef DIST
-
-#define DIST 50
-  for (int i = 0; i < 8; i++) {
-    PWM *out = new PWM(Qt::blue, &frame, i);
-    out->setGeometry(688, 281+i*DIST, 10, 10);
-  }
-#undef DIST
+  kk2 = new KK2(&frame);
   
   frame.show();
   

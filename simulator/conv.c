@@ -4,7 +4,6 @@ extern "C"{
 
 char * utoa(unsigned int n, char * buffer, int radix) {
   return (char *)0;
-
 }
 
 char *ultoa(long n,  char * buffer, int radix) {
