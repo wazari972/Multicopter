@@ -38,15 +38,19 @@ public:
   
   bool buttonPressed(int x);
   void ledState(bool x);
-
+  void pinState(bool x);
+  
   int getBat(void);
   int getGyro(int pin);
   int getAcc(int ping);
+  void setPinState(int pin, bool x);
   
 signals:
-  void refresh();
-  void lightOn();
-  void lightOff();
+  void refresh(void);
+  void lightOn(void);
+  void lightOff(void);
+  void pinState(int pin, bool x);
+  
 protected:
   KK2 *kk2;
   Arduino *ardu;

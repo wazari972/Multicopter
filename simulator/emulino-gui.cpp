@@ -124,29 +124,31 @@ void Button::paintEvent(QPaintEvent *event)
  *
  ***/
 
-PWM::PWM(QColor color, QWidget *parent, int id) : QWidget(parent){
-  this->color = color;
-  this->state = true;
+PWM::PWM(bool in, QWidget *parent, int id) : QWidget(parent){
+  this->state = false;
   this->id = id;
+  this->in = in;
 }
 
 void PWM::paintEvent(QPaintEvent *event)
 {
+  QColor color;
   QPainter painter(this);
-  if (state) {
-    painter.setPen(color);
-    painter.setBrush(color);
-    painter.drawEllipse(rect());
+  if (this->in) {
+    color = (state ? Qt::blue : Qt::green);
+  } else {
+    color = (state ? Qt::red : Qt::yellow);
   }
+
+  painter.setPen(color);
+  painter.setBrush(color);
+  painter.drawEllipse(rect());
 }
 
-void PWM::setPWM(long pwm) {
-  
+void PWM::setState(bool st) {
+  this->state = st;
 }
 
-long PWM::getPWM(void) {
-  return -1;
-}
 
 /***
  *
@@ -231,14 +233,14 @@ KK2::KK2(QFrame *frame) {
 
 #define DIST 50
   for (int i = 0; i < PWM_IN_CNT; i++) {
-    in_pwns[i] = new PWM(Qt::green, frame, i);
+    in_pwns[i] = new PWM(true, frame, i);
     in_pwns[i]->setGeometry(83, 290+i*DIST, 10, 10);
   }
 #undef DIST
 
 #define DIST 50
   for (int i = 0; i < PWM_OUT_CNT; i++) {
-    this->out_pwns[i] = new PWM(Qt::blue, frame, i);
+    this->out_pwns[i] = new PWM(false, frame, i);
     this->out_pwns[i]->setGeometry(688, 281+i*DIST, 10, 10);
   }
 #undef DIST
@@ -246,14 +248,6 @@ KK2::KK2(QFrame *frame) {
 
 void KK2::ledState(bool st) {
   this->led->setState(st);
-}
-
-long KK2::getInPWM(int id) {
-  return this->in_pwns[id]->getPWM();
-}
-
-void KK2::setOutPWM(int id, long pwm) {
-  this->out_pwns[id]->setPWM(pwm);
 }
 
 bool KK2::btPressed(int id) {
@@ -287,6 +281,22 @@ void KK2::lightOff(void) {
   this->led->setState(false);
   this->led->update();
 }
+
+void KK2::pinState(int pin, bool state) {
+  if (pin >= 0 && pin <= 4) {
+    this->in_pwns[pin]->setState(state);
+    this->in_pwns[pin]->update();
+  }
+  if (pin >= 5 && pin <= 12) {
+    this->out_pwns[pin - 5]->setState(state);
+    this->out_pwns[pin - 5]->update();
+  }
+  if (pin == 13) {
+    this->led->setState(state);
+    this->led->update();
+  }
+}
+
 /***
  *
  * Simulator thread
@@ -319,6 +329,10 @@ void KKComm::ledState(bool x) {
   }
 }
 
+void KKComm::setPinState(int pin, bool state) {
+  emit pinState(pin, state);
+}
+
 void KKComm::drawPixel(int x, int y) {
   this->kk2->lcd->setPixel(true, x, y);
 }
@@ -335,7 +349,6 @@ bool KKComm::buttonPressed(int x) {
 void KKComm::clearScreen(void) {
    this->kk2->lcd->clear();
 }
-
 
 int KKComm::getBat(void) {
   return this->bat;
@@ -383,9 +396,12 @@ int main(int argc, char *argv[])
 
   KK2 *kk2 = new KK2(&frame);
   KKComm *com = new KKComm(kk2);
+  
   QObject::connect(com, SIGNAL(refresh()), kk2, SLOT(update()));
   QObject::connect(com, SIGNAL(lightOff()), kk2, SLOT(lightOff()));
   QObject::connect(com, SIGNAL(lightOn()), kk2, SLOT(lightOn()));
+  QObject::connect(com, SIGNAL(pinState(int,bool)), kk2, SLOT(pinState(int,bool)));
+  
   Arduino *arduino = new Arduino(com);
   com->setArduino(arduino);
 

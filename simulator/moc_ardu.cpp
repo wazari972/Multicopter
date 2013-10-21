@@ -22,23 +22,25 @@ static const uint qt_meta_data_KKComm[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       3,       // signalCount
+       4,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
        8,    7,    7,    7, 0x05,
       18,    7,    7,    7, 0x05,
       28,    7,    7,    7, 0x05,
+      45,   39,    7,    7, 0x05,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_KKComm[] = {
     "KKComm\0\0refresh()\0lightOn()\0lightOff()\0"
+    "pin,x\0pinState(int,bool)\0"
 };
 
 void KKComm::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -50,10 +52,10 @@ void KKComm::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 0: _t->refresh(); break;
         case 1: _t->lightOn(); break;
         case 2: _t->lightOff(); break;
+        case 3: _t->pinState((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         default: ;
         }
     }
-    Q_UNUSED(_a);
 }
 
 const QMetaObjectExtraData KKComm::staticMetaObjectExtraData = {
@@ -88,9 +90,9 @@ int KKComm::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 4;
     }
     return _id;
 }
@@ -111,5 +113,12 @@ void KKComm::lightOn()
 void KKComm::lightOff()
 {
     QMetaObject::activate(this, &staticMetaObject, 2, 0);
+}
+
+// SIGNAL 3
+void KKComm::pinState(int _t1, bool _t2)
+{
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    QMetaObject::activate(this, &staticMetaObject, 3, _a);
 }
 QT_END_MOC_NAMESPACE

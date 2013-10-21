@@ -281,7 +281,7 @@ static const uint qt_meta_data_KK2[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -292,12 +292,14 @@ static const uint qt_meta_data_KK2[] = {
        5,    4,    4,    4, 0x0a,
       14,    4,    4,    4, 0x0a,
       24,    4,    4,    4, 0x0a,
+      45,   35,    4,    4, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_KK2[] = {
     "KK2\0\0update()\0lightOn()\0lightOff()\0"
+    "pin,state\0pinState(int,bool)\0"
 };
 
 void KK2::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -309,10 +311,10 @@ void KK2::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **
         case 0: _t->update(); break;
         case 1: _t->lightOn(); break;
         case 2: _t->lightOff(); break;
+        case 3: _t->pinState((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         default: ;
         }
     }
-    Q_UNUSED(_a);
 }
 
 const QMetaObjectExtraData KK2::staticMetaObjectExtraData = {
@@ -347,9 +349,9 @@ int KK2::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 4;
     }
     return _id;
 }

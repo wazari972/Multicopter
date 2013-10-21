@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <cstdlib>
+
 #include <sys/time.h>
 
 #include "ardu.hpp"
@@ -11,12 +11,12 @@ Arduino::Arduino(KKComm *kkcom) {
 }
 
 void Arduino::pinMode(uint8_t p, uint8_t m) {
-  printf("pinMode %d %d\n", p, m);
+  //printf("pinMode %d %d\n", p, m);
 }
 
 void Arduino::digitalWrite(uint8_t v, uint8_t w) {
-  if (v == 13) {
-    this->kkcom->ledState(w);
+  if (v >= 0 && v <= 13) {
+    this->kkcom->setPinState(v, w);
     return;
   }
   printf("digitalWrite %d %d\n", v, w);
@@ -45,7 +45,7 @@ int Arduino::analogRead(uint8_t w) {
 }
 
 void Arduino::analogReference(uint8_t mode) {
-  printf("analogReference, mode\n", mode);
+  printf("analogReference %d\n", mode);
 }
 
 void Arduino::delay(unsigned long d) {

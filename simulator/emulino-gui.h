@@ -58,12 +58,11 @@ protected:
 class PWM: public QWidget {
   Q_OBJECT
 public:
-  PWM(QColor color, QWidget *parent, int id);
-  void setPWM(long pwm);
-  long getPWM(void);
+  PWM(bool in, QWidget *parent, int id);
+  void setState(bool st);
 protected:
   void paintEvent(QPaintEvent *event);
-  QColor color;
+  bool in;
   bool state;
   int id;
 };
@@ -111,8 +110,6 @@ class KK2 : public QObject {
 public:
   KK2(QFrame *parent);
   void ledState(bool);
-  long getInPWM(int id);
-  void setOutPWM(int id, long pwm);
   bool btPressed(int id);
   bool btReleased(int id);
 
@@ -122,6 +119,7 @@ public slots:
   void update(void);
   void lightOn(void);
   void lightOff(void);
+  void pinState(int pin, bool state);
   
 protected:
   Led *led;
