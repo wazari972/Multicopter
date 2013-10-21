@@ -34,13 +34,26 @@ public:
 
   void drawPixel(int x, int y);
   void clearScreen(void);
-
+  void refreshScreen(void);
+  
   bool buttonPressed(int x);
   void ledState(bool x);
+
+  int getBat(void);
+  int getGyro(int pin);
+  int getAcc(int ping);
+  
+signals:
+  void refresh();
+  void lightOn();
+  void lightOff();
 protected:
   KK2 *kk2;
   Arduino *ardu;
-  
+
+  int bat;
+  int acc[3];
+  int gyr[3];
   void run();
   
 };

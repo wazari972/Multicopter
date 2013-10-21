@@ -44,7 +44,10 @@ extern "C"{
     st7565DrawString_P(x, y, text);
   }
   
-  void st7565Refresh( void ){}
+  void st7565Refresh( void ){
+    arduino->kkcom->refreshScreen();
+  }
+  
   void st7565ClearBuffer( void ){
     arduino->kkcom->clearScreen();
   }

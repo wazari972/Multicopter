@@ -46,13 +46,11 @@ INCPATH       = -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore
 moc_emulino-gui.cpp: emulino-gui.h
 	/usr/lib/qt4/bin/moc $(DEFINES) $(INCPATH) emulino-gui.h -o moc_emulino-gui.cpp 
 
-moc_ardu.cpp: ardu.h
+moc_ardu.cpp: ardu.h ardu.cpp
 	/usr/lib/qt4/bin/moc $(DEFINES) $(INCPATH) ardu.hpp -o moc_ardu.cpp 
 
 emulino-gui.moc : emulino-gui.cpp
 	/usr/lib/qt4/bin/moc $(DEFINES) $(INCPATH) emulino-gui.cpp -o emulino-gui.moc 
-
-
 
 emulino-gui.o : emulino-gui.cpp moc_emulino-gui.cpp emulino-gui.moc
 	$(CXX) -c $(QTFLAGS) $(QTINC) $(<) -o $(@) 

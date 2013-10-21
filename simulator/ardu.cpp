@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <cstdlib>
+#include <sys/time.h>
 
 #include "ardu.hpp"
 
@@ -29,8 +31,14 @@ int Arduino::digitalRead(uint8_t w) {
 }
 
 int Arduino::analogRead(uint8_t w) {
-  if (w >= 1 && w <= 7) {
-    return -1;
+  if (w == 3) {
+    return this->kkcom->getBat();
+  }
+  if (w == 1 || w == 2 || w == 4) {
+    return this->kkcom->getGyro(w);
+  }
+  if (w == 5 || w == 6 || w == 7) {
+    return this->kkcom->getAcc(w);
   }
   printf("analogRead %d\n", w);
   return 0;
@@ -41,14 +49,17 @@ void Arduino::analogReference(uint8_t mode) {
 }
 
 void Arduino::delay(unsigned long d) {
-  printf("delay %d\n", d);
+  //printf("delay %d\n", d);
   usleep(d*1000);
-  printf("delay %d done\n", d);
+  //printf("delay %d done\n", d);
 }
 
 unsigned long Arduino::millis(void) {
-  printf("millis\n");
-  return 0;
+  struct timeval  tv;
+  gettimeofday(&tv, NULL);
+  
+  unsigned long time_in_mill = (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000;
+  return time_in_mill;
 }
 
 void Arduino::delayMicroseconds(unsigned int us) {

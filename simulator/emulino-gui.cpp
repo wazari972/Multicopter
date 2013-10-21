@@ -21,6 +21,7 @@
 #include "emulino-gui.h"
 #include "ardu.hpp"
 
+#include <cstdlib>
 #include <stdio.h>
 
 class EmulinoApp: public QApplication {
@@ -29,10 +30,7 @@ public:
   EmulinoApp(int &argc, char *argv[]);
 };
 
-EmulinoApp::EmulinoApp(int &argc, char *argv[]) : QApplication(argc, argv)
-{
-
-}
+EmulinoApp::EmulinoApp(int &argc, char *argv[]) : QApplication(argc, argv) { }
 
 class BoardWidget: public QWidget {
   Q_OBJECT
@@ -65,7 +63,7 @@ void BoardWidget::paintEvent(QPaintEvent *event)
 Led::Led(QColor color, QWidget *parent) : QWidget(parent)
 {
   this->color = color;
-  state = true;
+  state = false;
 }
 
 void Led::paintEvent(QPaintEvent *event)
@@ -98,14 +96,14 @@ void Button::mousePressEvent(QMouseEvent *event)
 {
   this->color = Qt::blue;
   this->pressed = true;
-  update();
+  this->update();
 }
 
 void Button:: mouseReleaseEvent(QMouseEvent *event)
 {
   this->color = Qt::red;
   this->pressed = false;
-  update();
+  this->update();
 }
 
 bool Button::isPressed(void) {
@@ -171,12 +169,12 @@ void Lcd::paintEvent(QPaintEvent *event)
   painter.setBrush(Qt::white);
   painter.drawRect(rect());
   painter.setBrush(Qt::black);
-
+  
   for (int x = 0; x < LCD_X; x++) {
     for (int y = 0; y < LCD_Y; y++) {
       if (display[x][y]) {
 	painter.drawRect(LCD_PIXEL*x, LCD_PIXEL*y, LCD_PIXEL, LCD_PIXEL);
-      }
+      } 
     }
   }
 }
@@ -248,7 +246,6 @@ KK2::KK2(QFrame *frame) {
 
 void KK2::ledState(bool st) {
   this->led->setState(st);
-  this->led->update();
 }
 
 long KK2::getInPWM(int id) {
@@ -281,7 +278,15 @@ void KK2::update(void) {
   this->lcd->update();
 }
 
+void KK2::lightOn(void) {
+  this->led->setState(true);
+  this->led->update();
+}
 
+void KK2::lightOff(void) {
+  this->led->setState(false);
+  this->led->update();
+}
 /***
  *
  * Simulator thread
@@ -292,6 +297,14 @@ void KK2::update(void) {
 
 KKComm::KKComm(KK2 *kk2) {
   this->kk2 = kk2;
+  this->bat = 12;
+  this->acc[0] = 0;
+  this->acc[1] = 0;
+  this->acc[2] = 0;
+
+  this->gyr[0] = 0;
+  this->gyr[1] = 0;
+  this->gyr[2] = 0;
 }
 
 void KKComm::setArduino(Arduino *ardu) {
@@ -299,12 +312,20 @@ void KKComm::setArduino(Arduino *ardu) {
 }
 
 void KKComm::ledState(bool x) {
-  this->kk2->ledState(x);
+  if (x) {
+    emit lightOn();
+  } else {
+    emit lightOff();
+  }
 }
 
 void KKComm::drawPixel(int x, int y) {
   this->kk2->lcd->setPixel(true, x, y);
-  this->kk2->lcd->update();
+}
+
+void KKComm::refreshScreen(void) { 
+  emit refresh();
+  usleep(5000);
 }
 
 bool KKComm::buttonPressed(int x) {
@@ -313,7 +334,30 @@ bool KKComm::buttonPressed(int x) {
 
 void KKComm::clearScreen(void) {
    this->kk2->lcd->clear();
-   this->kk2->lcd->update();
+}
+
+
+int KKComm::getBat(void) {
+  return this->bat;
+}
+
+int KKComm::getGyro(int pin) {
+  int gyrId;
+  if (pin == 1) gyrId = 0;
+  if (pin == 2) gyrId = 1;
+  if (pin == 4) gyrId = 2;
+
+  this->gyr[gyrId] +=  rand() % 3 - 1;
+  
+  return this->gyr[gyrId];
+}
+
+int KKComm::getAcc(int pin) {
+  int accId = pin - 5;
+
+  this->acc[accId] +=  rand() % 21 - 10;
+  
+  return this->acc[accId];
 }
 
 void KKComm::run()
@@ -339,7 +383,9 @@ int main(int argc, char *argv[])
 
   KK2 *kk2 = new KK2(&frame);
   KKComm *com = new KKComm(kk2);
-
+  QObject::connect(com, SIGNAL(refresh()), kk2, SLOT(update()));
+  QObject::connect(com, SIGNAL(lightOff()), kk2, SLOT(lightOff()));
+  QObject::connect(com, SIGNAL(lightOn()), kk2, SLOT(lightOn()));
   Arduino *arduino = new Arduino(com);
   com->setArduino(arduino);
 

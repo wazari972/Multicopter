@@ -9,7 +9,7 @@ typedef char byte;
 #define PROGMEM
 
 #define HIGH 1
-#define LOW 1
+#define LOW 0
 #define EXTERNAL 1
 
 #include "/usr/share/arduino/hardware/arduino/cores/arduino/WString.h"

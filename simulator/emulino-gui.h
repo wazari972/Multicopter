@@ -106,7 +106,8 @@ private:
 #define PWM_IN_CNT 5
 #define PWM_OUT_CNT 8
 
-class KK2 {
+class KK2 : public QObject {
+  Q_OBJECT
 public:
   KK2(QFrame *parent);
   void ledState(bool);
@@ -114,9 +115,14 @@ public:
   void setOutPWM(int id, long pwm);
   bool btPressed(int id);
   bool btReleased(int id);
-  void update(void);
 
   Lcd *lcd;
+
+public slots:
+  void update(void);
+  void lightOn(void);
+  void lightOff(void);
+  
 protected:
   Led *led;
   Button *buttons[BT_CNT];

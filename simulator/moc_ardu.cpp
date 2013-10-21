@@ -22,25 +22,37 @@ static const uint qt_meta_data_KKComm[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       0,    0, // methods
+       3,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       3,       // signalCount
+
+ // signals: signature, parameters, type, tag, flags
+       8,    7,    7,    7, 0x05,
+      18,    7,    7,    7, 0x05,
+      28,    7,    7,    7, 0x05,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_KKComm[] = {
-    "KKComm\0"
+    "KKComm\0\0refresh()\0lightOn()\0lightOff()\0"
 };
 
 void KKComm::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
-    Q_UNUSED(_o);
-    Q_UNUSED(_id);
-    Q_UNUSED(_c);
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        KKComm *_t = static_cast<KKComm *>(_o);
+        switch (_id) {
+        case 0: _t->refresh(); break;
+        case 1: _t->lightOn(); break;
+        case 2: _t->lightOff(); break;
+        default: ;
+        }
+    }
     Q_UNUSED(_a);
 }
 
@@ -75,6 +87,29 @@ int KKComm::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QThread::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 3)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 3;
+    }
     return _id;
+}
+
+// SIGNAL 0
+void KKComm::refresh()
+{
+    QMetaObject::activate(this, &staticMetaObject, 0, 0);
+}
+
+// SIGNAL 1
+void KKComm::lightOn()
+{
+    QMetaObject::activate(this, &staticMetaObject, 1, 0);
+}
+
+// SIGNAL 2
+void KKComm::lightOff()
+{
+    QMetaObject::activate(this, &staticMetaObject, 2, 0);
 }
 QT_END_MOC_NAMESPACE
