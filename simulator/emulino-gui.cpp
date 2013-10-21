@@ -27,34 +27,11 @@ class EmulinoApp: public QApplication {
   Q_OBJECT
 public:
   EmulinoApp(int &argc, char *argv[]);
-public slots:
-  void onIdle();
-  void onButtonPress();
-  void onButtonRelease();
-  
-private:
-  QTimer timer;
 };
 
 EmulinoApp::EmulinoApp(int &argc, char *argv[]) : QApplication(argc, argv)
 {
-//  connect(&timer, SIGNAL(timeout()), this, SLOT(onIdle()));
-//  timer.start(0);
-}
 
-void EmulinoApp::onIdle()
-{
-  printf("idle\n");
-}
-
-void EmulinoApp::onButtonPress()
-{
-  printf("button pressed\n");
-}
-
-void EmulinoApp::onButtonRelease()
-{
-  printf("button released\n");
 }
 
 class BoardWidget: public QWidget {
@@ -113,30 +90,34 @@ void Led::setState(bool st) {
 
 Button::Button(QWidget *parent, int id) : QWidget(parent){
   this->color = Qt::red;
-  this->state = true;
+  this->pressed = false;
   this->id = id;
     
 }
 void Button::mousePressEvent(QMouseEvent *event)
 {
   this->color = Qt::blue;
+  this->pressed = true;
   update();
 }
 
 void Button:: mouseReleaseEvent(QMouseEvent *event)
 {
   this->color = Qt::red;
+  this->pressed = false;
   update();
+}
+
+bool Button::isPressed(void) {
+  return this->pressed;
 }
 
 void Button::paintEvent(QPaintEvent *event)
 {
   QPainter painter(this);
-  if (state) {
-    painter.setPen(color);
-    painter.setBrush(color);
-    painter.drawEllipse(rect());
-  }
+  painter.setPen(color);
+  painter.setBrush(color);
+  painter.drawEllipse(rect());
 }
 
 /***
@@ -199,8 +180,13 @@ void Lcd::paintEvent(QPaintEvent *event)
     }
   }
 }
+
 void Lcd::setPixel(bool val, int x, int y) {
-  display[x][y] = val;
+  display[x][LCD_Y - y] = val;
+}
+
+void Lcd::clear(void) {
+  memset(display, 0, sizeof(display));
 }
 
 void Lcd::writeText(const char *chr, int x, int y) {
@@ -208,7 +194,8 @@ void Lcd::writeText(const char *chr, int x, int y) {
   while(*chr) {
     if (*chr == '\n') {
       x = init_x;
-      y += CHAR_HEIGHT + CHAR_INTER_LINE ;
+      y += CHAR_HEIGHT;
+      y += CHAR_INTER_LINE;
       goto cont;
     }
     
@@ -231,17 +218,16 @@ void Lcd::writeText(const char *chr, int x, int y) {
  ***/
 
 KK2::KK2(QFrame *frame) {
-  lcd = new Lcd(frame);
-  lcd->setGeometry(130, 280, LCD_X*LCD_PIXEL, LCD_Y*LCD_PIXEL);
-  lcd->writeText("hello\nworld", 10, 10);
+  this->lcd = new Lcd(frame);
+  this->lcd->setGeometry(130, 280, LCD_X*LCD_PIXEL, LCD_Y*LCD_PIXEL);
   
-  led = new Led(Qt::yellow, frame);
-  led->setGeometry(165, 163, 20, 10);
+  this->led = new Led(Qt::red, frame);
+  this->led->setGeometry(165, 163, 20, 10);
   
 #define DIST 138
   for (int i = 0; i <  BT_CNT; i++) {
-    buttons[i] = new Button(frame, i);
-    buttons[i]->setGeometry(170+i*DIST, 685, 30, 30);
+    this->buttons[i] = new Button(frame, i);
+    this->buttons[i]->setGeometry(170+i*DIST, 685, 30, 30);
   }
 #undef DIST
 
@@ -254,31 +240,31 @@ KK2::KK2(QFrame *frame) {
 
 #define DIST 50
   for (int i = 0; i < PWM_OUT_CNT; i++) {
-    out_pwns[i] = new PWM(Qt::blue, frame, i);
-    out_pwns[i]->setGeometry(688, 281+i*DIST, 10, 10);
+    this->out_pwns[i] = new PWM(Qt::blue, frame, i);
+    this->out_pwns[i]->setGeometry(688, 281+i*DIST, 10, 10);
   }
 #undef DIST
 }
 
 void KK2::ledState(bool st) {
-  led->setState(st);
-  led->update();
+  this->led->setState(st);
+  this->led->update();
 }
 
 long KK2::getInPWM(int id) {
-  return in_pwns[id]->getPWM();
+  return this->in_pwns[id]->getPWM();
 }
 
 void KK2::setOutPWM(int id, long pwm) {
-  out_pwns[id]->setPWM(pwm);
+  this->out_pwns[id]->setPWM(pwm);
 }
 
 bool KK2::btPressed(int id) {
-  return false;
+  return this->buttons[id]->isPressed();
 }
 
 bool KK2::btReleased(int id) {
-  return false;
+  return !this->btPressed(id);
 }
 
 void KK2::update(void) {
@@ -312,9 +298,22 @@ void KKComm::setArduino(Arduino *ardu) {
   this->ardu = ardu;
 }
 
-void KKComm::sayHello(const char *str) {
-  this->kk2->lcd->writeText(str, 50, 50);
+void KKComm::ledState(bool x) {
+  this->kk2->ledState(x);
+}
+
+void KKComm::drawPixel(int x, int y) {
+  this->kk2->lcd->setPixel(true, x, y);
   this->kk2->lcd->update();
+}
+
+bool KKComm::buttonPressed(int x) {
+  return this->kk2->btReleased(x);
+}
+
+void KKComm::clearScreen(void) {
+   this->kk2->lcd->clear();
+   this->kk2->lcd->update();
 }
 
 void KKComm::run()

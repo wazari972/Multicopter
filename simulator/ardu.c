@@ -40,6 +40,10 @@ extern "C" {
     return arduino->delayMicroseconds(us);
 }
 
+  void prepare(Arduino *ardu) {
+    arduino = ardu;
+  }
+
 #ifdef __cplusplus
 }
 #endif

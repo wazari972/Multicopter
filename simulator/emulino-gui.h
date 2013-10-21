@@ -38,13 +38,14 @@ class Button: public QWidget {
   Q_OBJECT
 public:
   Button(QWidget *parent, int id);
+  bool isPressed(void);
 public slots:
   void mousePressEvent(QMouseEvent *event);
   void mouseReleaseEvent(QMouseEvent *event);
 protected:
   void paintEvent(QPaintEvent *event);
   QColor color;
-  bool state;
+  bool pressed;
   int id;
 };
 
@@ -87,6 +88,7 @@ public:
   Lcd(QWidget *parent);
   void writeText(const char *chr, int x, int y);
   void setPixel(bool val, int x, int y);
+  void clear(void);
 protected:
   void paintEvent(QPaintEvent *event);
 private:
@@ -113,7 +115,7 @@ public:
   bool btPressed(int id);
   bool btReleased(int id);
   void update(void);
-  
+
   Lcd *lcd;
 protected:
   Led *led;

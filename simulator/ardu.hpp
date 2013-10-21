@@ -21,8 +21,9 @@ public:
   void ssetup();
 
   void lloop();
-private:
   KKComm *kkcom;
+private:
+  
 };
 
 class KKComm : public QThread {
@@ -30,10 +31,16 @@ class KKComm : public QThread {
 public:
   KKComm(KK2 *kk2);
   void setArduino(Arduino *ardu);
-  void sayHello(const char *);
+
+  void drawPixel(int x, int y);
+  void clearScreen(void);
+
+  bool buttonPressed(int x);
+  void ledState(bool x);
 protected:
+  KK2 *kk2;
   Arduino *ardu;
   
   void run();
-  KK2 *kk2;
+  
 };

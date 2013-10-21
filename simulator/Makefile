@@ -12,7 +12,7 @@ QTLIBS = -lQtGui -lQtCore -lpthread
 all: emulino-gui
 
 KK2LCD.o : ./LCD/KK2LCD.c
-	$(CXX) -c $(CXXFLAGS) -I../simulator/LCD $(<) -o $(@)
+	$(CXX) -c $(CXXFLAGS) -I../simulator/LCD $(<) -o $(@) $(QTFLAGS) $(QTINC)
 
 
 project.o : project.c

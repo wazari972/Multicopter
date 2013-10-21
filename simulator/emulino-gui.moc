@@ -21,38 +21,25 @@ static const uint qt_meta_data_EmulinoApp[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       0,    0, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        0,       // signalCount
 
- // slots: signature, parameters, type, tag, flags
-      12,   11,   11,   11, 0x0a,
-      21,   11,   11,   11, 0x0a,
-      37,   11,   11,   11, 0x0a,
-
        0        // eod
 };
 
 static const char qt_meta_stringdata_EmulinoApp[] = {
-    "EmulinoApp\0\0onIdle()\0onButtonPress()\0"
-    "onButtonRelease()\0"
+    "EmulinoApp\0"
 };
 
 void EmulinoApp::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        Q_ASSERT(staticMetaObject.cast(_o));
-        EmulinoApp *_t = static_cast<EmulinoApp *>(_o);
-        switch (_id) {
-        case 0: _t->onIdle(); break;
-        case 1: _t->onButtonPress(); break;
-        case 2: _t->onButtonRelease(); break;
-        default: ;
-        }
-    }
+    Q_UNUSED(_o);
+    Q_UNUSED(_id);
+    Q_UNUSED(_c);
     Q_UNUSED(_a);
 }
 
@@ -87,11 +74,6 @@ int EmulinoApp::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QApplication::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
-            qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
-    }
     return _id;
 }
 static const uint qt_meta_data_BoardWidget[] = {
