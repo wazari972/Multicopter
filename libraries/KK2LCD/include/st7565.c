@@ -449,7 +449,7 @@ void st7565DrawString(uint16_t x, uint16_t y, char* text)
   }
 }
 
-void st7565DrawString_P(uint16_t x, uint16_t y, char* text)
+void st7565DrawString_P(uint16_t x, uint16_t y, const char* text)
 {
 	char c;
   uint8_t l = 0;
