@@ -308,6 +308,11 @@ void KK2::pinState(int pin, bool state) {
 KKComm::KKComm(KK2 *kk2) {
   this->kk2 = kk2;
   this->bat = 12;
+
+  // next step: read actual KK values from the device,
+  // through serial-usb connection.
+  // to simulate serial communication: socat -d -d pty,raw,echo=0 pty,raw,echo=0
+  
   this->acc[0] = 0;
   this->acc[1] = 0;
   this->acc[2] = 0;
