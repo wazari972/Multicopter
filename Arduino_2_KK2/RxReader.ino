@@ -1,5 +1,6 @@
 //retrieved from http://playground.arduino.cc/Code/ReadReceiver
 
+// check http://rcarduino.blogspot.fr/2012/01/how-to-read-rc-receiver-with.html
 /*
 Copyright 2011 Lex Talionis (Lex.V.Talionis at gmail)
 This program is free software: you can redistribute it 
