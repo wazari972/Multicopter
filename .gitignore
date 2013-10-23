@@ -3,3 +3,6 @@ emulino-gui
 emulino
 main
 .#*
+**/.dep
+**/.lib
+*.hex
