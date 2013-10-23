@@ -15,7 +15,7 @@ KK2LCD.o : ./LCD/KK2LCD.c
 	$(CXX) -c $(CXXFLAGS) -I../simulator/LCD $(<) -o $(@) $(QTFLAGS) $(QTINC)
 
 
-project.o : project.c
+project.o : project.c import.c
 	$(CXX) -c $(CXXFLAGS) -I../simulator/LCD $(<) -o $(@)
 
 
