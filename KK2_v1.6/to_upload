@@ -1,0 +1,1 @@
+sudo /usr/share/arduino/hardware/tools/avrdude -C/usr/share/arduino/hardware/tools/avrdude.conf -v -v -v -v -patmega324p -cusbasp -Pusb -Uflash:w:./kk2.hex:i
